@@ -42,20 +42,11 @@ public class MySQLCardController {
     }
 
 
-
-
     @RequestMapping(value = "cards", method = RequestMethod.POST)
     public Card add(@RequestBody Card card, @AuthenticationPrincipal OAuth2User principal) {
         
-        Map<String, Object> details = principal.getAttributes();
-        String userId = details.get("sub").toString();
 
-
-        Optional<User> user = userServ.getUser(userId);
-        card.setUser(user.orElse(new User(userId,
-                details.get("name").toString(), details.get("email").toString())));
-
-        Card result = cardServ.add(card);
+        Card result = cardServ.add(card,principal);
         return result;
 
     }

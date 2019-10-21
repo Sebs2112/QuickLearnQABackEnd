@@ -22,6 +22,8 @@ public class CardService {
 
     @Autowired
     private CardRepo cRepo;
+    @Autowired
+    private UserService userServ;
 
 
 
@@ -36,11 +38,17 @@ public class CardService {
 
 
 
-    public Card add(Card card)
+    public Card add(Card card, OAuth2User principal)
 
     {
 
+        Map<String, Object> details = principal.getAttributes();
+        String userId = details.get("sub").toString();
 
+
+        Optional<User> user = userServ.getUser(userId);
+        card.setUser(user.orElse(new User(userId,
+                details.get("name").toString(), details.get("email").toString())));
         Card result = cRepo.save(card);
         return result;
 
