@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.Map;
@@ -50,6 +52,8 @@ public class MySQLCardController {
         return result;
 
     }
+
+
     //Get mapping would also work here and post put etc
     @RequestMapping(value = "cards/{id}", method = RequestMethod.GET)
     public Card get(@PathVariable Long id) throws Exception {
@@ -72,6 +76,15 @@ public class MySQLCardController {
 
 
         cardServ.delete(id);
+    }
+
+
+    @RequestMapping(value = "cards/file", method = RequestMethod.POST)
+
+    public void ingestCSV(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal OAuth2User principal ) throws Exception {
+
+
+       cardServ.addMultipleFromCSV(file,principal);
     }
 
 

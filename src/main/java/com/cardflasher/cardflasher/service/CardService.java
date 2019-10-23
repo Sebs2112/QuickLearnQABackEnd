@@ -12,10 +12,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class CardService {
@@ -82,6 +90,77 @@ public class CardService {
         Card card = cRepo.findById(id)
                 .orElseThrow(() -> new Exception());
         cRepo.delete(card);
+    }
+
+    public void addMultipleFromCSV(MultipartFile file, OAuth2User principal){
+
+        //Error check to see if the csv has the correct titles.
+        try{
+            InputStreamReader inputS = new InputStreamReader(file.getInputStream(),
+                    StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(inputS);
+
+            Pattern hash = Pattern.compile("(#)\\w*\\b");
+            Matcher m1;
+            Matcher m2;
+            String line;
+            String[] columns;
+
+
+            String category = "";
+            String ftext = "";
+            String btext = "";
+
+            while((line =br.readLine())!= null){
+                System.out.println(line);
+
+
+                if(line.substring(0,1).equals("#")){
+                    columns = line.split(",");
+                    category = columns[1];
+
+                    m1 = hash.matcher(columns[0]);
+
+
+                    if(m1.find()) {
+                        ftext = m1.group();
+                        btext = columns[0].substring(ftext.length()+1, columns[0].length());
+
+                    }
+
+
+
+                }else if(line.substring(0,1).equals("\"")) {
+                    columns = line.split("\",");
+
+                    if (columns.length > 1) {
+                        category = columns[1].split(",")[0];
+
+                    }
+
+                    m1 = hash.matcher(columns[0]);
+
+
+                    if(m1.find()) {
+                        ftext = m1.group();
+                        btext = columns[0].substring(ftext.length()+1, columns[0].length());
+
+                    }
+                 }
+                System.out.println("cat " + category + "title " + ftext + "back text " + btext);
+                add(new Card(ftext,ftext,btext,category,null),principal );
+
+            }
+
+
+
+
+
+
+
+        }catch(Exception e){
+            System.out.println("Error");
+        }
     }
 
 
