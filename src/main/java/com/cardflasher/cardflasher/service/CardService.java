@@ -99,6 +99,7 @@ public class CardService {
             InputStreamReader inputS = new InputStreamReader(file.getInputStream(),
                     StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(inputS);
+            br.readLine();
 
             Pattern hash = Pattern.compile("(#)\\w*\\b");
             Matcher m1;
@@ -117,7 +118,7 @@ public class CardService {
 
                 if(line.substring(0,1).equals("#")){
                     columns = line.split(",");
-                    category = columns[1];
+                    category = columns[1].replaceAll("\"","");
 
                     m1 = hash.matcher(columns[0]);
 
@@ -125,6 +126,7 @@ public class CardService {
                     if(m1.find()) {
                         ftext = m1.group();
                         btext = columns[0].substring(ftext.length()+1, columns[0].length());
+
 
                     }
 
@@ -134,7 +136,7 @@ public class CardService {
                     columns = line.split("\",");
 
                     if (columns.length > 1) {
-                        category = columns[1].split(",")[0];
+                        category = columns[1].split(",")[0].replaceAll("\"","");
 
                     }
 
@@ -145,11 +147,13 @@ public class CardService {
                         ftext = m1.group();
                         btext = columns[0].substring(ftext.length()+1, columns[0].length());
 
+
                     }
                  }
                 System.out.println("cat " + category + "title " + ftext + "back text " + btext);
-                add(new Card(ftext,ftext,btext,category,null),principal );
-
+                if(btext.length()<=255 && ftext.length()!= 0 && btext.length()!=0) {
+                    add(new Card(ftext, ftext, btext, category, null), principal);
+                }
             }
 
 
