@@ -36,6 +36,7 @@ public class MySQLCardController {
 
 
 
+
     @RequestMapping(value = "cards", method = RequestMethod.GET)
     public Iterable<Card> list(Principal principal){
 
@@ -43,10 +44,17 @@ public class MySQLCardController {
         return cardServ.list(principal);
     }
 
+    @RequestMapping(value = "cards/getByName/{name}", method = RequestMethod.GET)
+    public Card getCardByName(@PathVariable String name, @AuthenticationPrincipal OAuth2User principal){
+        System.out.println("Hi");
+        Card temp = cardServ.getByNameAndUser(name,principal);
+        System.out.println(temp);
+        return temp;
+    }
 
     @RequestMapping(value = "cards", method = RequestMethod.POST)
     public Card add(@RequestBody Card card, @AuthenticationPrincipal OAuth2User principal) {
-        
+        System.out.println("Hi");
 
         Card result = cardServ.add(card,principal);
         return result;

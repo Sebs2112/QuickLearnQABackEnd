@@ -43,9 +43,6 @@ public class CardService {
     }
 
 
-
-
-
     public Card add(Card card, OAuth2User principal)
 
     {
@@ -67,6 +64,13 @@ public class CardService {
 
         return cRepo.findById(id)
                 .orElseThrow(() -> new Exception());
+    }
+
+    public Card getByNameAndUser(String name, OAuth2User principal){
+
+        Map<String, Object> details = principal.getAttributes();
+        String userId = details.get("sub").toString();
+        return cRepo.findByTitleAndUserId(name,userId);
     }
 
 
@@ -127,9 +131,7 @@ public class CardService {
                         ftext = m1.group();
                         btext = columns[0].substring(ftext.length()+1, columns[0].length());
 
-
-                    }
-
+                     }
 
 
                 }else if(line.substring(0,1).equals("\"")) {
@@ -150,16 +152,12 @@ public class CardService {
 
                     }
                  }
+                ftext = ftext.replaceAll("#","");
                 System.out.println("cat " + category + "title " + ftext + "back text " + btext);
                 if(btext.length()<=255 && ftext.length()!= 0 && btext.length()!=0) {
                     add(new Card(ftext, ftext, btext, category, null), principal);
                 }
             }
-
-
-
-
-
 
 
         }catch(Exception e){
