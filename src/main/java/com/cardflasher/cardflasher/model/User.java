@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
-
+//Added a comment
 
 
     @Id
