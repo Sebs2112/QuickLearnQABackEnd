@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 
 
-
 @RestController
 @RequestMapping("/api/")
 public class MySQLCardController {
@@ -31,34 +30,30 @@ public class MySQLCardController {
 
     @Autowired
     private CardService cardServ;
-    @Autowired
-    private UserService userServ;
 
 
+
+    @RequestMapping(value = "cards", method = RequestMethod.POST)
+    public Card add(@RequestBody Card card, @AuthenticationPrincipal OAuth2User principal) {
+
+        return cardServ.add(card, principal);
+
+    }
 
 
     @RequestMapping(value = "cards", method = RequestMethod.GET)
-    public Iterable<Card> list(Principal principal){
+    public Iterable<Card> list(Principal principal) {
 
 
         return cardServ.list(principal);
     }
 
     @RequestMapping(value = "cards/getByName/{name}", method = RequestMethod.GET)
-    public Card getCardByName(@PathVariable String name, @AuthenticationPrincipal OAuth2User principal){
+    public Card getCardByName(@PathVariable String name, @AuthenticationPrincipal OAuth2User principal) {
         System.out.println("Hi");
-        Card temp = cardServ.getByNameAndUser(name,principal);
+        Card temp = cardServ.getByNameAndUser(name, principal);
         System.out.println(temp);
         return temp;
-    }
-
-    @RequestMapping(value = "cards", method = RequestMethod.POST)
-    public Card add(@RequestBody Card card, @AuthenticationPrincipal OAuth2User principal) {
-        System.out.println("Hi");
-
-        Card result = cardServ.add(card,principal);
-        return result;
-
     }
 
 
@@ -70,17 +65,16 @@ public class MySQLCardController {
     }
 
 
-
     @RequestMapping(value = "cards/{id}", method = RequestMethod.PUT)
     public Card update(@PathVariable Long id, @RequestBody Card newCard) throws Exception {
 
-        return cardServ.update(id,newCard);
+        return cardServ.update(id, newCard);
     }
 
 
     @RequestMapping(value = "cards/{id}", method = RequestMethod.DELETE)
 
-    public void delete(@PathVariable Long id ) throws Exception {
+    public void delete(@PathVariable Long id) throws Exception {
 
 
         cardServ.delete(id);
@@ -89,13 +83,11 @@ public class MySQLCardController {
 
     @RequestMapping(value = "cards/file", method = RequestMethod.POST)
 
-    public void ingestCSV(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal OAuth2User principal ) throws Exception {
+    public void ingestCSV(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal OAuth2User principal) throws Exception {
 
 
-       cardServ.addMultipleFromCSV(file,principal);
+        cardServ.addMultipleFromCSV(file, principal);
     }
-
-
 
 
 }

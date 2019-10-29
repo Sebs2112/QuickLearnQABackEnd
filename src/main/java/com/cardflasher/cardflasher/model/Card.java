@@ -12,11 +12,10 @@ import javax.persistence.*;
 //If you wanted this class to be stored in a table of a different name then you could oput the following line
 //Card=School or something similar
 @Entity
-//@NameQueries - name queries can go here.
 public class Card {
 
     @Id //At ID means that this is the primary key.
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO) //There are four types of stratetgy Auto, Identity, sequence and table
     private Long id;
     private String frontText;
     private String backText;

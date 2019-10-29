@@ -34,15 +34,6 @@ public class CardService {
     private UserService userServ;
 
 
-
-
-    public Iterable<Card> list(Principal principal){
-
-
-        return cRepo.findAllByUserId(principal.getName());
-    }
-
-
     public Card add(Card card, OAuth2User principal)
 
     {
@@ -59,6 +50,12 @@ public class CardService {
 
     }
 
+
+    public Iterable<Card> list(Principal principal){
+
+
+        return cRepo.findAllByUserId(principal.getName());
+    }
 
     public Card get(Long id) throws Exception {
 
